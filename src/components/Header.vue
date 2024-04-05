@@ -1,8 +1,7 @@
 <template>
-    <v-toolbar
-        extension-height="50"
-        extended
+    <v-app-bar
         color="#25B7A1"
+        scroll-behavior="elevate"
       >
   
         <img
@@ -36,7 +35,7 @@
           Register
         </v-btn>
   
-      </v-toolbar>
+      </v-app-bar>
 </template>
   
 <script>

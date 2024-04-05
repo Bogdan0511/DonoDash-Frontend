@@ -1,5 +1,4 @@
 <template>
-  <v-layout>
     <v-footer class="donodash-footer">
       <div class="socials">
         <div class="useful-links">
@@ -38,7 +37,7 @@
       </div>
 
       <div class="copyright">
-        {{ new Date().getFullYear() }} — DonoDash
+        Copyright © 2024 DonoDash. All rights reserved.
       </div>
 
       <img
@@ -47,9 +46,7 @@
           height="30px"
           style="margin-left: 100px; border-radius: 100px;"
       ></img>
-
     </v-footer>
-  </v-layout>
 </template>
 
 <script>
@@ -70,7 +67,7 @@
 <style scoped>
     .donodash-footer {
         background-color: #25B7A1;
-        position: absolute;
+        position: fixed;
         bottom: 0;
         left: 0;
         z-index: 10;
