@@ -63,13 +63,15 @@
           activity of your fan community
         </div>
 
-        <v-btn 
+        <router-link to="/login" style="text-decoration: none; margin: 20px auto 0 auto">
+          <v-btn 
           size="x-large" 
           rounded="xl"
           class="donodash-orange-button"
-        >
-          GET STARTED
-        </v-btn>
+          >
+            GET STARTED
+          </v-btn>
+        </router-link>
 
        </div>
     </v-main>

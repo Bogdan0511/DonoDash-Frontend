@@ -2,37 +2,48 @@
     <v-footer class="donodash-footer">
       <div class="socials">
         <div class="useful-links">
-            <v-btn
-             color="white"
-             variant="text"
-             class="link-button"
-            >
-            About us
-            </v-btn>
-            <v-btn
-             color="white"
-             variant="text"
-             class="link-button"
-            >
-            Terms and conditions
-            </v-btn>
-            <v-btn
-             color="white"
-             variant="text"
-             class="link-button"
-            >
-            Help
-            </v-btn>
+            <router-link to="/about" style="text-decoration: none;">
+              <v-btn
+                color="white"
+                variant="text"
+                class="link-button"
+              >
+                About us
+              </v-btn>
+            </router-link>
+
+            <router-link to="/terms-and-conditions" style="text-decoration: none;">
+              <v-btn
+                color="white"
+                variant="text"
+                class="link-button"
+              >
+                Terms and conditions
+              </v-btn>
+            </router-link>
+            
+            <router-link to="/help" style="text-decoration: none;">
+              <v-btn
+                color="white"
+                variant="text"
+                class="link-button"
+              >
+                Help
+              </v-btn>
+            </router-link>
+            
         </div>
   
         <v-btn
-          v-for="icon in icons"
-          :key="icon"
-          :icon="icon"
+          v-for="social in socialLinks"
+          :key="social.icon"
+          :icon="social.icon"
           class="mx-4"
           size="small"
           variant="text"
           color="white"
+          :href="social.link"
+          target="_blank"
         ></v-btn>
       </div>
 
@@ -55,12 +66,12 @@
     name: 'Footer',
 
     data: () => ({
-      icons: [
-        'mdi-facebook',
-        'mdi-linkedin',
-        'mdi-instagram',
-      ],
-    }),
+    socialLinks: [
+      { icon: 'mdi-facebook', link: 'https://www.facebook.com/profile.php?id=100007165783895' },
+      { icon: 'mdi-linkedin', link: 'https://www.linkedin.com/in/bogdan-vila-384695268/' },
+      { icon: 'mdi-instagram', link: 'https://www.instagram.com/bogdan.vila/' },
+    ],
+  }),
   }
 </script>
 

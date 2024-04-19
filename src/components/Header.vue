@@ -18,23 +18,27 @@
         ></img>
   
         <v-spacer></v-spacer>
-  
-        <v-btn 
-          size="large" 
-          rounded="xl" 
-          class="donodash-white-button"
-        >
-          Login
-        </v-btn>
-  
-        <v-btn 
+
+        <router-link to="/login" class="link">
+          <v-btn 
+            size="large" 
+            rounded="xl" 
+            class="donodash-white-button"
+          >
+            Login
+          </v-btn>
+        </router-link>
+        
+        <router-link to="/register" class="link">
+          <v-btn 
           size="large" 
           rounded="xl"
           class="donodash-orange-button"
-        >
-          Register
-        </v-btn>
-  
+          >
+            Register
+          </v-btn>
+        </router-link>
+
       </v-app-bar>
 </template>
   
@@ -62,5 +66,9 @@
       background-color: #FFA53A;
       color:white;
       width: 200px;
+    }
+
+    .link {
+      text-decoration: none;
     }
 </style>
