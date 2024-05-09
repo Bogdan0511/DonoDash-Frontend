@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import axios from 'axios'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,9 +65,24 @@ const router = createRouter({
             name: 'report-a-problem',
             component: () => import('../views/ReportView.vue')
           }
-      ]
+      ],
+      meta: { requiresAuth: true }
     }
   ]
-})
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    axios.get('http://localhost:8080/donodash/auth/validate-session', { withCredentials: true })
+      .then(() => {
+        next();
+      })
+      .catch(() => {
+        next('/login');
+      });
+  } else {
+    next();
+  }
+});
 
 export default router

@@ -28,6 +28,7 @@
                         <div class="input-type">First name:</div>
 
                         <v-text-field
+                            v-model="firstName"
                             prepend-inner-icon="mdi-account-circle-outline"
                             variant="solo" 
                             class="donodash-input"
@@ -38,6 +39,7 @@
                         <div class="input-type">Last name:</div>
 
                         <v-text-field
+                            v-model="lastName"
                             prepend-inner-icon="mdi-account-circle-outline"
                             variant="solo" 
                             class="donodash-input"
@@ -48,6 +50,7 @@
                         <div class="input-type">Username:</div>
 
                         <v-text-field
+                            v-model="displayName"
                             prepend-inner-icon="mdi-card-account-details-outline"
                             variant="solo" 
                             class="donodash-input"
@@ -58,6 +61,7 @@
                         <div class="input-type">Email address:</div>
 
                         <v-text-field
+                            v-model="email"
                             prepend-inner-icon="mdi-email-outline"
                             variant="solo" 
                             class="donodash-input"
@@ -69,6 +73,7 @@
                         <div class="input-type">Password:</div>
 
                         <v-text-field
+                            v-model="password"
                             :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                             :type="visible ? 'text' : 'password'"
                             prepend-inner-icon="mdi-lock-outline"
@@ -83,6 +88,7 @@
                         <div class="input-type">Confirm password:</div>
 
                         <v-text-field
+                            v-model="confirmPassword"
                             :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                             :type="visible ? 'text' : 'password'"
                             prepend-inner-icon="mdi-lock-outline"
@@ -96,6 +102,7 @@
                         <div class="input-type">YouTube channel:</div>
 
                         <v-text-field
+                            v-model="youtubeChannel"
                             prepend-inner-icon="mdi-video-account"
                             variant="solo" 
                             class="donodash-input"
@@ -112,6 +119,7 @@
                             class="donodash-input"
                             density="compact"
                             rounded
+                            @change="onFilePicked"
                         ></v-file-input>
                     </v-col>
                 </v-row>
@@ -120,6 +128,7 @@
                     size="large" 
                     rounded="xl"
                     class="donodash-orange-button"
+                    @click="register"
                 >
                     REGISTER
                 </v-btn>
@@ -147,10 +156,53 @@
 </template>
 
 <script>
+    import axios from 'axios'
+
     export default {
         data: () => ({
-            visible: false
-        })
+            visible: false,
+            firstName: '',
+            lastName: '',
+            displayName: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            youtubeChannel: '',
+            profilePicture: null
+        }),
+        methods: {
+            async register() {
+                const formData = new FormData();
+                formData.append('firstName', this.firstName);
+                formData.append('lastName', this.lastName);
+                formData.append('displayName', this.displayName);
+                formData.append('email', this.email);
+                formData.append('password', this.password);
+                formData.append('youtubeChannel', this.youtubeChannel);
+                if (this.profilePicture) {
+                    formData.append('profilePicture', this.profilePicture);
+                }
+                formData.append('userType', "USER");
+
+                try {
+                    const response = await axios.post('http://localhost:8080/donodash/auth/register', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    this.$router.push('/login');
+                    console.log('Registration successful');
+                } catch (error) {
+                    console.error('Registration failed:', error);
+                }
+            },
+            onFilePicked(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.profilePicture = file;
+                }
+            }
+        }
     }
 </script>
 

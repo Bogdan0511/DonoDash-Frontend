@@ -35,22 +35,43 @@
           <router-link to="/main/report-a-problem" style="text-decoration: none; color: inherit;">
             <v-list-item rounded="xl" class="options" :class="{ 'list-item': $route.name === 'report-a-problem' }" prepend-icon="mdi-alert" title="Report a problem" value="report_problem"></v-list-item>
           </router-link>
-          <router-link to="/" style="text-decoration: none; color: inherit;">
-            <v-list-item rounded="xl" class="options" :class="{ 'list-item': $route.name === 'home' }" prepend-icon="mdi-logout" title="Logout" value="logout" style="margin-top: 220px;"></v-list-item>
-          </router-link>
+            <v-list-item rounded="xl" class="options" :class="{ 'list-item': $route.name === 'home' }" prepend-icon="mdi-logout" title="Logout" value="logout" style="margin-top: 215px;" @click="logout"></v-list-item>
         </v-list>
     </v-navigation-drawer>
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         name: 'Sidebar',
         data: () => ({
-            profileImageUrl: "../src/assets/Bogdan.png",
-            firstName: "Bogdan",
-            lastName: "Vila",
-            displayName: "Bogdan0511"
-        })
+            profileImageUrl: '',
+            firstName: localStorage.getItem('firstName'),
+            lastName: localStorage.getItem('lastName'),
+            displayName: localStorage.getItem('displayName')
+        }),
+        mounted() {
+          this.setupProfileImage();
+        },
+        methods: {
+            async logout() {
+                try {
+                    await axios.post('http://localhost:8080/donodash/auth/logout', {}, 
+                      { withCredentials: true });
+                    localStorage.clear();
+                    this.$router.push('/login');
+                } catch (error) {
+                    console.error('Logout failed:', error);
+                }
+            },
+            setupProfileImage() {
+              const relativePath = localStorage.getItem('profilePicture');
+              if (relativePath) {
+                  this.profileImageUrl = `http://localhost:8080${relativePath}`;
+            }
+        }
+        }
     }
 </script>
 
