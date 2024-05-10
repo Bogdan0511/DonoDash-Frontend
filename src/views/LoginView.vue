@@ -94,7 +94,7 @@ export default {
                     withCredentials: true
                 });
 
-                const { firstName, lastName, displayName, youtubeChannel, profilePicture, email, userType } = response.data;
+                const { firstName, lastName, displayName, youtubeChannel, profilePicture, email, userType, id } = response.data;
                 localStorage.setItem('firstName', firstName);
                 localStorage.setItem('lastName', lastName);
                 localStorage.setItem('displayName', displayName);
@@ -102,6 +102,7 @@ export default {
                 localStorage.setItem('profilePicture', profilePicture);
                 localStorage.setItem('email', email);
                 localStorage.setItem('userType', userType);
+                localStorage.setItem('id', id);
 
                 setTimeout(() => {
                     this.loading = false;

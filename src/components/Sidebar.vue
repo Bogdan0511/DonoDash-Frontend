@@ -70,7 +70,7 @@
               if (relativePath) {
                   this.profileImageUrl = `http://localhost:8080${relativePath}`;
             }
-        }
+          }
         }
     }
 </script>
