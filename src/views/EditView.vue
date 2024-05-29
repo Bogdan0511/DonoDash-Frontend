@@ -102,6 +102,7 @@
 
 <script>
     import axios from 'axios'
+    import { useUserStore } from '@/stores/userStore';
 
     export default {
         data: () => ({
@@ -115,6 +116,7 @@
         methods: {
             async updateUser() {
                 const formData = new FormData();
+                const userStore = useUserStore();
                 formData.append('firstName', this.firstName);
                 formData.append('lastName', this.lastName);
                 formData.append('displayName', this.displayName);
@@ -125,22 +127,17 @@
                 }
 
                 try {
-                    const userId = localStorage.getItem("id");
+                    const userId = userStore.id; 
                     const response = await axios.put(`http://localhost:8080/donodash/user/update/${userId}`, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },
                         withCredentials: true
                     });
-                    const { firstName, lastName, displayName, youtubeChannel, profilePicture, email, userType, id } = response.data;
-                        localStorage.setItem('firstName', firstName);
-                        localStorage.setItem('lastName', lastName);
-                        localStorage.setItem('displayName', displayName);
-                        localStorage.setItem('youtubeChannel', youtubeChannel);
-                        localStorage.setItem('profilePicture', profilePicture);
-                        localStorage.setItem('email', email);
-                        localStorage.setItem('userType', userType);
-                        localStorage.setItem('id', id);
+                    
+                    userStore.clearUser();
+                    userStore.setUser(response.data);
+                    userStore.saveState();
                     console.log('Update successful');
                 } catch (error) {
                     console.error('Update failed:', error);

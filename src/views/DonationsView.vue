@@ -38,10 +38,10 @@
                         </v-col>
                         <v-col cols="7" class="pa-3">
                             <div class="donor-name">{{ donation.donor }}</div>
-                            <div class="donor-comment">{{ donation.comment }}</div>
+                            <div class="donor-comment">{{ donation.message }}</div>
                         </v-col>
                         <v-col cols="3" class="pa-3 text-right">
-                            <div class="donation-date">{{ donation.date }}</div>
+                            <div class="donation-date">{{ donation.date_received }}</div>
                             <div class="donation-amount">{{ donation.amount }} {{ donation.currency }}</div>
                         </v-col>
                     </v-row>
@@ -62,6 +62,8 @@
 </template>
 
 <script>
+    import axios from 'axios';
+    import { useUserStore } from '@/stores/userStore';
 
     function getRandomFloat(min, max, decimalPlaces) {
         let rand = Math.random() * (max - min) + min;
@@ -85,18 +87,31 @@
                 'Amount'
             ],
             filterOptions: [
-                'YouTube',
-                'Revolut'
+                'ALL',
+                'REVOLUT',
+                'YOUTUBE'
             ]
         }),
-        created() {
-            this.donations = this.generateDonations();
+        setup() {
+            const userStore = useUserStore();
+            return { userStore };
+        },
+        async created() {
+
+            try {
+                const response = await axios.get(`http://localhost:8080/donodash/donations/${this.userStore.id}`, {
+                    withCredentials: true
+                });
+                this.donations = response.data;
+            } catch (error) {
+                console.error('Error fetching donations:', error);
+            }
         },
         computed: {
             sortedDonations() {
                 return this.donations.sort((a, b) => {
                     if (this.sort === 'Date') {
-                        return new Date(b.date) - new Date(a.date);
+                        return new Date(b.date_received) - new Date(a.date_received);
                     } else if (this.sort === 'Amount') {
                         return b.amount - a.amount;
                     }
@@ -107,6 +122,8 @@
                 if (!this.filter) {
                     return this.sortedDonations;
                 }
+                if (this.filter === 'ALL')
+                    return this.sortedDonations;
                 return this.sortedDonations.filter(
                     (donation) => donation.source === this.filter
                 );

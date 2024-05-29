@@ -21,14 +21,14 @@
               <div>
                 <span class="donor-rank" style="flex: 1;">{{ index + 1 }}.</span> {{ donor.name }}
               </div>
-              <div class="donor-amount" style="flex: 1;">{{ donor.totalAmount.toFixed(2) }} USD</div>
+              <div class="donor-amount" style="flex: 1;">{{ donor.totalAmount.toFixed(2) }} RON</div>
               <div class="donor-donations" style="flex: 1;">{{ donor.totalDonations }} total donations</div>
             </div>
             <div v-if="index >= 3" class="flex-row-layout">
               <div>
                 <span class="donor-rank">{{ index + 1 }}.</span> {{ donor.name }}
               </div>
-              <div class="donor-amount">{{ donor.totalAmount.toFixed(2) }} USD</div>
+              <div class="donor-amount">{{ donor.totalAmount.toFixed(2) }} RON</div>
               <div class="donor-donations">{{ donor.totalDonations }} total donations</div>
             </div>
           </div>
@@ -40,48 +40,62 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { useUserStore } from '@/stores/userStore';
+
 export default {
-  data() {
-    return {
-      donations: []
-    };
-  },
-  created() {
-    this.donations = this.generateDonations();
-  },
-  computed: {
-    aggregatedDonors() {
-      const aggregation = this.donations.reduce((acc, donation) => {
-        if (acc[donation.donor]) {
-          acc[donation.donor].totalAmount += donation.amount;
-          acc[donation.donor].totalDonations += 1;
-        } else {
-          acc[donation.donor] = {
-            name: donation.donor,
-            totalAmount: donation.amount,
-            totalDonations: 1
-          };
-        }
-        return acc;
-      }, {});
-      return Object.values(aggregation);
+    data() {
+      return {
+        donations: []
+      };
     },
-    sortedDonors() {
-      return this.aggregatedDonors.sort((a, b) => b.totalAmount - a.totalAmount);
-    }
-  },
-  methods: {
-    generateDonations() {
-      const donors = ["TheGreatAly", "Joonas.r145", "Albert_153", "Razvan.Alin29", "AnuelAA24"];
-      let mockDonations = [];
-      for (let i = 1; i <= 30; i++) {
-        mockDonations.push({
-          donor: donors[Math.floor(Math.random() * donors.length)],
-          amount: Math.random() * 500 + 50 // Random amount between 50 and 550
+    setup() {
+      const userStore = useUserStore();
+      return { userStore };
+    },
+    async created() {
+      try {
+        const response = await axios.get(`http://localhost:8080/donodash/donations/${this.userStore.id}`, {
+          withCredentials: true
         });
+        this.donations = response.data;
+      } catch (error) {
+        console.error('Error fetching donations:', error);
       }
-      return mockDonations;
-    }
+    },
+    computed: {
+      aggregatedDonors() {
+        const aggregation = this.donations.reduce((acc, donation) => {
+          if (acc[donation.donor]) {
+            acc[donation.donor].totalAmount += donation.amount;
+            acc[donation.donor].totalDonations += 1;
+          } else {
+            acc[donation.donor] = {
+              name: donation.donor,
+              totalAmount: donation.amount,
+              totalDonations: 1
+            };
+          }
+          return acc;
+        }, {});
+        return Object.values(aggregation);
+      },
+      sortedDonors() {
+        return this.aggregatedDonors.sort((a, b) => b.totalAmount - a.totalAmount);
+      }
+    },
+    methods: {
+      generateDonations() {
+        const donors = ["TheGreatAly", "Joonas.r145", "Albert_153", "Razvan.Alin29", "AnuelAA24"];
+        let mockDonations = [];
+        for (let i = 1; i <= 30; i++) {
+          mockDonations.push({
+            donor: donors[Math.floor(Math.random() * donors.length)],
+            amount: Math.random() * 500 + 50 // Random amount between 50 and 550
+          });
+        }
+        return mockDonations;
+      }
   }
 };
 </script>

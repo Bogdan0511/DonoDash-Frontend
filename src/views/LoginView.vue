@@ -52,11 +52,11 @@
             </div>
 
             <v-dialog v-model="loginFailed" persistent max-width="290px">
-                <v-card>
-                    <v-card-title class="text-h5">Login Error</v-card-title>
-                    <v-card-text>{{ errorMessage }}</v-card-text>
+                <v-card style="display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 35px">
+                    <v-card-title style="font-family: 'Archivo Black', 'sans-serif';">Login failed!</v-card-title>
+                    <v-card-text style="font-family: 'Archivo', 'sans-serif'; font-size: large;">{{ errorMessage }}</v-card-text>
                     <v-card-actions>
-                        <v-btn color="green darken-1" text @click="errorMessage = ''; loginFailed = false">Close</v-btn>
+                        <v-btn class="orange-button" rounded @click="errorMessage = ''; loginFailed = false">Close</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -68,6 +68,7 @@
 <script>
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/userStore';
 
 export default {
     data: () => ({
@@ -80,7 +81,8 @@ export default {
     }),
     setup() {
         const router = useRouter();
-        return { router };
+        const userStore = useUserStore();
+        return { router, userStore };
     },
     methods: {
         async login() {
@@ -94,15 +96,8 @@ export default {
                     withCredentials: true
                 });
 
-                const { firstName, lastName, displayName, youtubeChannel, profilePicture, email, userType, id } = response.data;
-                localStorage.setItem('firstName', firstName);
-                localStorage.setItem('lastName', lastName);
-                localStorage.setItem('displayName', displayName);
-                localStorage.setItem('youtubeChannel', youtubeChannel);
-                localStorage.setItem('profilePicture', profilePicture);
-                localStorage.setItem('email', email);
-                localStorage.setItem('userType', userType);
-                localStorage.setItem('id', id);
+                this.userStore.setUser(response.data);
+                this.userStore.saveState();
 
                 setTimeout(() => {
                     this.loading = false;
@@ -111,9 +106,7 @@ export default {
             } catch (error) {
                 this.loading = false;
                 this.loginFailed = true;
-                this.errorMessage = error.response && error.response.data && error.response.data.message
-                    ? error.response.data.message
-                    : error.message;
+                this.errorMessage = "Wrong email or password";
             }
         }
     }
@@ -192,6 +185,14 @@ export default {
     width: 200px;
     margin-top: 30px;
     margin-left: 104px;
+}
+
+.orange-button {
+    font-family: "Archivo Black", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    background-color: #FFA53A;
+    color: white;
 }
 
 .link-button {
